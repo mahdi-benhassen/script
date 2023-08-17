@@ -1,0 +1,69 @@
+
+sudo apt-get update
+sudo apt-get install -y linux-image-5.10.24arg linux-headers-5.10.24arg build-essential python-all python-dev python-setuptools autoconf gettext flex automake sharutils rsync libssl-dev unzip xdot gengetopt dos2unix 
+sudo apt-get install openjdk-6-jdk *
+sudo apt-get install libssl0.9.8 *
+sudo apt-get install wget *
+sudo apt-get install libxslt *
+sudo apt-get install awk *
+sudo apt-get install openvswitch-switch python3-jinja2
+sudo apt-get install -y bison texinfo patch ncurses-dev zlib1g-dev openssl liblzo2-dev uuid-dev perl cmake python3-pip git-core gawk python3 tofrodos subversion bc  libsqlite3-dev python 
+sudo apt-get install -y repo lshw gdb-multiarch libselinux1-dev libpalm-perl minicom libxml2 libxml2-dev libxslt1.1 libxslt1-dev libxml2-utils uml-utilities meld gcc-multilib g++-multilib xsltproc intltool txt2tags graphviz git git-doc gitk xinetd tftp tftpd
+
+
+cd workspace
+
+# clone SPF12.2 main repo. Private source code
+
+export http_proxy=http://proxy.dsi.scom:8080 export http_proxy=http://proxy.dsi.scom:8080
+
+curl -v -I https://chipmaster2.qti.qualcomm.com/home2/git/sagemcom-broadband-sas/qca-networking-2022-spf-12-2_qca_oem
+
+git -c http.sslVerify=false -c http.followRedirects=true clone --progress --verbose https://chipmaster2.qti.qualcomm.com/home2/git/sagemcom-broadband-sas/qca-networking-2022-spf-12-2_qca_oem
+
+git -c http.sslVerify=false -c http.followRedirects=true clone --progress --verbose --single-branch --branch r12.2_00008.0 https://chipmaster2.qti.qualcomm.com/home2/git/sagemcom-broadband-sas/qca-networking-2022-spf-12-2_qca_oem_ezmesh-src
+
+git -c http.sslVerify=false -c http.followRedirects=true clone --progress --verbose --single-branch --branch r12.2_00008.0 https://chipmaster2.qti.qualcomm.com/home2/git/sagemcom-broadband-sas/qca-networking-2022-spf-12-2_qca_oem_ezmesh-alg
+
+
+cd qca-networking-2022-spf-12-2_qca_oem/
+
+git checkout r12.2_00008.0
+
+rm -rf BOOT.XF.0.3 CNSS.PS.3.19 IPQ6018.ILQ.12.2 TMEL.WNS.1.0 TZ.WNS.4.0 WLAN.BL.3.19 BOOT.BF.3.3.1 IPQ5018.ILQ.12.2 IPQ8074.ILQ.12.2 NSS.FW.12.2 TZ.WNS.5.1 WLAN.HK.2.9 BOOT.BF.3.3.1.1 BTFW.MAPLE.1.0.0 IPQ9574.ILQ.12.2 RPM.BF.2.4.1 TZ.BF.4.0.8
+
+cp -rf */* .
+
+cp -rf IPQ5322/trustzone_images/ .
+
+# il faut utiliser la version python 3
+
+# ls -lrt /usr/bin/python
+# ln -sf /usr/bin/python2.7 /usr/bin/python
+
+repo init -u https://git.codelinaro.org/clo/qsdk/releases/manifest/qstak -b release -m AU_LINUX_QSDK_NHSS.QSDK.12.2_TARGET_ALL.12.2.000.2049.xml
+
+repo sync -j8 --no-tags -qc
+
+ 
+
+cd common/build
+# il faut utiliser la version python 2.7
+python meta_generation_script.py -c r12.2_00008.0 -s IPQ5322.ILQ.12.2 -p P -b 64 -d HYFI,WHC,EZMESH_SRC,EZMESH_ALG -m EZMESH_FULL --path /home/g701218/workspace/
+
+
+
+***********************************************************************
+sudo python3 ~/bin/repo init -u https://git.codelinaro.org/clo/qsdk/releases/manifest/qstak -b release -m AU_LINUX_QSDK_NHSS.QSDK.12.2_TARGET_ALL.12.2.000.2049.xml
+
+Your Name  [root]: g573442
+Your Email [root@sagemcom.sst.sagem]: mahdi.ben-hassen@sagemcom.com
+
+Your identity is: g573442 <mahdi.ben-hassen@sagemcom.com>
+is this correct [y/N]? y
+
+repo has been initialized in /home/g573442/Workspace/Qualcomm_F380Q/qca-networking-2022-spf-12-2_qca_oem-r12.2_00008.0
+*************************************************************************************************************************************
+sudo python3 ~/bin/repo sync -j8 --no-tags -qc
+
+ 
